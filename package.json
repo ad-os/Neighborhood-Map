@@ -1,0 +1,25 @@
+{
+  "name": "neighborhood-map",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^0.4.5"
+  },
+  "devDependencies": {
+    "grunt-browser-sync": "^2.1.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ad-os/Neighborhood-Map.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ad-os/Neighborhood-Map/issues"
+  },
+  "homepage": "https://github.com/ad-os/Neighborhood-Map#readme"
+}
