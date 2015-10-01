@@ -1,0 +1,27 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+input {
+	width: 100%;
+	min-height: 50px;
+	font-size: xx-large;
+	padding: 8px;
+}
+
+body {
+	display: flex;
+}
+
+#listContainer {
+	width: 30%;
+}
+
+#map {
+	height: 100%;
+	width: 70%
+}
+
+
