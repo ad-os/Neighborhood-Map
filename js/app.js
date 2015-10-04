@@ -36,7 +36,7 @@ var generateImageUrl = function(clientId, clientSecret, venueId) {
  */
 var place = function(name, latLng, imageIndex, formattedAddress, address) {
 	this.name = ko.observable(name);
-	this.marker = createMarker(latLng);
+	this.marker = createMarker(latLng, name, address);
 	this.formattedAddress = ko.observable(formattedAddress);
 	this.address = ko.observable(address);
 	this.imageIndex = ko.observable(imageIndex);
@@ -46,11 +46,27 @@ var place = function(name, latLng, imageIndex, formattedAddress, address) {
  *@desc - A function for creating markers on the map.
  *@params - Object latLng
  */
-var createMarker = function(latLng) {
+var createMarker = function(latLng, name, address) {
 	var marker = new google.maps.Marker({
 		map: map,
-		position: latLng
+		position: latLng,
+		animation: google.maps.Animation.DROP,
+		title: name
 	});
+	var infowindow = new google.maps.InfoWindow({
+		content: generateContent(name, address)
+	});
+	var toggleBounce =function() {
+		if (marker.getAnimation() !== null) {
+			marker.setAnimation(null);
+		} else {
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+		}
+	}
+	marker.addListener('click', function() {
+		infowindow.open(map, marker);
+	});
+	marker.addListener('click', toggleBounce);
 	markers.push(marker);
 	return marker;
 };
@@ -63,7 +79,21 @@ var setMapOnAll = function(map) {
 	for (var i = 0; i < markers.length; i++) {
 		markers[i].setMap(map);
 	}
-}; 
+};
+
+/*
+ *@desc - generates the content for markers.
+ */
+var generateContent = function(name, address) {
+	var header = '<div class="markerHeader">' + name + '</div>',
+		address = '<div class="markerText">' + address + '</div>',
+		content = '<section class="markerContent">' + header + address;
+	return content;
+}
+
+var bindListenerToMarker = function() {
+
+} 
 
 /*
  *@desc - knockout's viewmodel function.
@@ -91,9 +121,8 @@ var setMapOnAll = function(map) {
 			address = venue.location.address;
 			latLng.lat = venue.location.lat;//Latitude for the venue
 			latLng.lng = venue.location.lng;//Logitude for the venue
-			self.placesArray.push(new place(venue.name, latLng, i));
+			self.placesArray.push(new place(venue.name, latLng, i, formattedAddress, address));
 			self.bindImage(imageUrl);//Save the image url for current venue.
-			console.log(self.placesArray()[i]);
 		}
 	});
  	/*

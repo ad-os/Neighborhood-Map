@@ -22,10 +22,13 @@
 </head>
 <body>
 	<section id="listContainer">
-		<input type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" autofocus/>
+		<input type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
 		<div data-bind="foreach: filteredItems">
-			<div class="listItem">
-				<div class="listText" data-bind="text: name"></div>
+			<div class="listItem" data-bind="click: ">
+				<div class="listText">
+					<div class="listTextHeading" data-bind="text: name"></div>
+					<div class="listTextData" data-bind="text: formattedAddress"></div>
+				</div>
 				<img class="listImage" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
 			</div>
 		</div>

@@ -9,11 +9,12 @@ html, body {
 }
 
 input {
-	width: 100%;
 	min-height: 50px;
 	font-size: xx-large;
 	padding: 8px;
-	margin: 0 0 10px 0px;
+	margin: 5px 5px 10px 5px;
+	min-width: 100%;
+	border: 2px light;
 }
 
 body {
@@ -49,13 +50,21 @@ hr {
 	width: 70%;
 }
 
+.listTextData {
+	font-size: 18px;
+	margin: 25px 5px 0 0;
+}
+
 .listImage {
 	width: 30%;
-	margin-top: 10px;
 }
 
 .listItem:hover {
 	background-color: #e6ebf6;
+}
+
+.markerContent {
+
 }
 
 
