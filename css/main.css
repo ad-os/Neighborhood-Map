@@ -8,15 +8,6 @@ html, body {
 	padding: 0;
 }
 
-input {
-	min-height: 50px;
-	font-size: xx-large;
-	padding: 8px;
-	margin: 5px 5px 10px 5px;
-	min-width: 100%;
-	border: 2px light;
-}
-
 body {
 	display: flex;
 }
@@ -25,38 +16,68 @@ hr {
 	margin: 10px 30px 10px 30px; 
 }
 
-#listContainer {
+nav {
+	height: 52px;
+	background: blue;
+	position: absolute;
+	width: 100%;
+}
+
+#list {
 	width: 40%;
 	overflow-y: scroll;
-	overflow-x: hidden;
+	overflow-x: hidden; 
+}
+
+.mapContainer {
+	width: 60%;
+}
+
+.inputText {
+	font-size: xx-large;
+	padding: 15px;
+	margin: 0 0 15px 0;
+	width: 100%;
+	border: 5px light;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 #map {
 	height: 100%;
-	width: 60%
+	width: 60%;
 }
 
 .listItem {
-	box-sizing: border-box;
 	display: flex;
-	padding: 15px;
-	font-size: 25px;
 	min-height: 200px;
+	padding: 15px;
 	border: 2px solid #0e38a8;
-	margin: 5px 5px 0 5px; 
+	margin: 5px 5px 0 5px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 .listText {
 	width: 70%;
 }
 
-.listTextData {
+.listTextHeading {
+	font-size: 25px;
+	font-weight: bold;
+	color: #f6a926;
+}
+
+.listTextData {	
 	font-size: 18px;
 	margin: 25px 5px 0 0;
 }
 
 .listImage {
 	width: 30%;
+	border-radius: 10px;
 }
 
 .listItem:hover {
@@ -67,4 +88,18 @@ hr {
 
 }
 
+.markerHeader {
+	padding: 3px 0 0 40px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #0e38a8;
+}
+
+.placeHolder {
+	float: left;
+}
+
+.markerText {
+	padding: 3px 0 0 40px;
+}
 

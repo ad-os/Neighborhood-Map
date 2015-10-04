@@ -36,7 +36,7 @@ var generateImageUrl = function(clientId, clientSecret, venueId) {
  */
 var place = function(name, latLng, imageIndex, formattedAddress, address) {
 	this.name = ko.observable(name);
-	this.marker = createMarker(latLng, name, address);
+	this.marker = createMarker(latLng, name, address, formattedAddress);
 	this.formattedAddress = ko.observable(formattedAddress);
 	this.address = ko.observable(address);
 	this.imageIndex = ko.observable(imageIndex);
@@ -46,7 +46,7 @@ var place = function(name, latLng, imageIndex, formattedAddress, address) {
  *@desc - A function for creating markers on the map.
  *@params - Object latLng
  */
-var createMarker = function(latLng, name, address) {
+var createMarker = function(latLng, name, address, formattedAddress) {
 	var marker = new google.maps.Marker({
 		map: map,
 		position: latLng,
@@ -54,13 +54,18 @@ var createMarker = function(latLng, name, address) {
 		title: name
 	});
 	var infowindow = new google.maps.InfoWindow({
-		content: generateContent(name, address)
+		content: generateContent(name, address, formattedAddress),
+		width: 400
 	});
 	var toggleBounce =function() {
 		if (marker.getAnimation() !== null) {
 			marker.setAnimation(null);
 		} else {
 			marker.setAnimation(google.maps.Animation.BOUNCE);
+			//Stop bouncing markers after 2 seconds.
+			setTimeout(function(){
+				toggleBounce();
+			}, 2000);
 		}
 	}
 	marker.addListener('click', function() {
@@ -84,16 +89,19 @@ var setMapOnAll = function(map) {
 /*
  *@desc - generates the content for markers.
  */
-var generateContent = function(name, address) {
-	var header = '<div class="markerHeader">' + name + '</div>',
-		address = '<div class="markerText">' + address + '</div>',
-		content = '<section class="markerContent">' + header + address;
+var generateContent = function(name, address, formattedAddress) {
+	var headerDiv = '<div class="markerHeader">' + name + '</div>',
+		imageDiv = '<img class="placeHolder" src="img/placeholder.png" />',
+		addressDiv = '<div class="markerText">' + address + '</div>',
+		content;
+	if (address !== undefined) {
+		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv;
+	} else {
+		addressDiv = '<div class="markerText">' + formattedAddress + '</div>',
+		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv;
+	}
 	return content;
 }
-
-var bindListenerToMarker = function() {
-
-} 
 
 /*
  *@desc - knockout's viewmodel function.
