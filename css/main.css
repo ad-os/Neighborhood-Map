@@ -1,3 +1,7 @@
+* {
+	font-family: 'Josefin Sans', sans-serif;
+}
+
 html, body {
 	height: 100%;
 	margin: 0;
@@ -9,19 +13,49 @@ input {
 	min-height: 50px;
 	font-size: xx-large;
 	padding: 8px;
+	margin: 0 0 10px 0px;
 }
 
 body {
 	display: flex;
 }
 
+hr {
+	margin: 10px 30px 10px 30px; 
+}
+
 #listContainer {
-	width: 30%;
+	width: 40%;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 #map {
 	height: 100%;
-	width: 70%
+	width: 60%
+}
+
+.listItem {
+	box-sizing: border-box;
+	display: flex;
+	padding: 15px;
+	font-size: 25px;
+	min-height: 200px;
+	border: 2px solid #0e38a8;
+	margin: 5px 5px 0 5px; 
+}
+
+.listText {
+	width: 70%;
+}
+
+.listImage {
+	width: 30%;
+	margin-top: 10px;
+}
+
+.listItem:hover {
+	background-color: #e6ebf6;
 }
 
 
