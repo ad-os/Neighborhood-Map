@@ -14,7 +14,7 @@ var apiDetails = {
  *@returns - String url
  */
 var generateDataUrl = function(clientId, clientSecret) {
-	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=28.61,77.23&query=biryani';
+	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=28.61,77.23&query=donuts';
 	return url;
 };
 

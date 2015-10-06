@@ -23,6 +23,9 @@
 	</script>
 </head>
 <body>
+	<nav>
+		<h1 class="nav-heading">Neighbourhood-Map</h1>
+	</nav>
 	<section id="list">
 		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
 		<div class="listContainer">
@@ -32,7 +35,9 @@
 						<div class="listTextHeading" data-bind="text: name"></div>
 						<div class="listTextData" data-bind="text: formattedAddress"></div>
 					</div>
-					<img class="listImage" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
+					<div class="listImage">
+						<img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
+					</div>
 				</div>
 				<hr />
 			</div>
