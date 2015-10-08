@@ -37,6 +37,7 @@ var generateImageUrl = function(clientId, clientSecret, venueId) {
 var place = function(name, latLng, imageIndex, formattedAddress, address) {
 	this.name = ko.observable(name);
 	this.marker = createMarker(latLng, name, address, formattedAddress);
+	this.markerInfoWindow = createInfoWindow(name, address, formattedAddress);
 	this.formattedAddress = ko.observable(formattedAddress);
 	this.address = ko.observable(address);
 	this.imageIndex = ko.observable(imageIndex);
@@ -53,10 +54,6 @@ var createMarker = function(latLng, name, address, formattedAddress) {
 		animation: google.maps.Animation.DROP,
 		title: name
 	});
-	var infowindow = new google.maps.InfoWindow({
-		content: generateContent(name, address, formattedAddress),
-		width: 400
-	});
 	var toggleBounce =function() {
 		if (marker.getAnimation() !== null) {
 			marker.setAnimation(null);
@@ -69,13 +66,34 @@ var createMarker = function(latLng, name, address, formattedAddress) {
 		}
 	}
 	marker.addListener('click', function() {
-		infowindow.open(map, marker);
+		var infowindow = createInfoWindow(name, address, formattedAddress);
+		showMarker(marker, infowindow);
 	});
 	marker.addListener('click', toggleBounce);
 	markers.push(marker);
 	return marker;
 };
-
+/*
+ *@desc - A function to create the infowindow.
+ *@params - String name: name of the place,String address: address of the place, 
+ *String formattedAddress: formattedaddress for the place.
+ */
+var createInfoWindow = function(name, address, formattedAddress) {
+	var infowindow = new google.maps.InfoWindow({
+		content: generateContent(name, address, formattedAddress),
+		width: 400
+	});
+	return infowindow;
+}
+/*
+ *@desc - A function to show the infowindow for the marker.
+ *@params - Object marker: A marker object, String name: name of the place
+ *String address: address of the place, String formattedAddress: formatted
+ *address for the place.
+ */
+var showMarker = function(marker, infowindow) {
+	infowindow.open(map, marker);
+}
 /*
  *@desc - Sets all the markers on the map
  *@params - google.maps.map Object 
@@ -106,16 +124,16 @@ var generateContent = function(name, address, formattedAddress) {
 /*
  *@desc - knockout's viewmodel function.
  */
- var viewModel = function () {
- 	var self = this;
- 	self.url = generateDataUrl(apiDetails.clientId, apiDetails.clientSecret);
- 	self.placesArray = ko.observableArray();//Array containing Objects which contains information about venues.
- 	self.imagesArray = ko.observableArray();//Array to store images of the venues.
- 	self.filter = ko.observable("");//input value by which we want to filter the places array.
- 	/*
- 	 *@desc - Ajax request to fetch objects containing image objects from the foursquare
- 	 */
- 	$.getJSON(self.url, function(data) {
+var viewModel = function () {
+	var self = this;
+	self.url = generateDataUrl(apiDetails.clientId, apiDetails.clientSecret);
+	self.placesArray = ko.observableArray();//Array containing Objects which contains information about venues.
+	self.imagesArray = ko.observableArray();//Array to store images of the venues.
+	self.filter = ko.observable("");//input value by which we want to filter the places array.
+	/*
+	 *@desc - Ajax request to fetch objects containing image objects from the foursquare
+	 */
+	$.getJSON(self.url, function(data) {
 		var venues = data.response.venues, //Array of returned venues from foursquare.
 			venue, //A single venue from array of venues.
 			imageUrl,//Contains the image url depending upon the venue.
@@ -133,10 +151,10 @@ var generateContent = function(name, address, formattedAddress) {
 			self.bindImage(imageUrl);//Save the image url for current venue.
 		}
 	});
- 	/*
- 	 *@desc - Binds image correspoding to each venue.
- 	 *@params - String imageUrl : To make ajax request to get image.
- 	 */
+	/*
+	 *@desc - Binds image correspoding to each venue.
+	 *@params - String imageUrl : To make ajax request to get image.
+	 */
 	self.bindImage = function(imageUrl) {
 		var prefix,
 			size,
@@ -180,6 +198,32 @@ var generateContent = function(name, address, formattedAddress) {
 			});
 		}
 	}, self);
+	/*
+	 *@desc - A binding function to show infowindow on mousehover.
+	 *@params - Object place: Current place.
+	 */
+	self.enableMarker = function(venue) {
+		showMarker(venue.marker, venue.markerInfoWindow);
+	};
+	/*
+	 *@desc - To close the infowindow on mouseout.
+	 *@params - Object place: Current place.
+	 */
+	self.disableMarker = function(venue) {
+		venue.markerInfoWindow.close();
+	};
+	self.flag = true;
+	self.display = ko.observable(true);	
+	self.toggleListDisplay = function() {
+		console.log(self.flag);
+		if (self.flag) {
+			self.flag = false;
+		} else {
+			self.flag = true;
+		}
+		self.display(self.flag);
+		showMarker(venue.marker, venue.markerInfoWindow);
+	};
 };
 
 ko.applyBindings(new viewModel());
