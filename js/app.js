@@ -130,6 +130,8 @@ var viewModel = function () {
 	self.placesArray = ko.observableArray();//Array containing Objects which contains information about venues.
 	self.imagesArray = ko.observableArray();//Array to store images of the venues.
 	self.filter = ko.observable("");//input value by which we want to filter the places array.
+	self.flag = ko.observable(1); //Flag to show if list is visible of not (Specific to mobile UI) 
+	self.buttonText = ko.observable('Show List of places !');//Text on the button (Specific to mobile UI)
 	/*
 	 *@desc - Ajax request to fetch objects containing image objects from the foursquare
 	 */
@@ -212,17 +214,15 @@ var viewModel = function () {
 	self.disableMarker = function(venue) {
 		venue.markerInfoWindow.close();
 	};
-	self.flag = true;
-	self.display = ko.observable(true);	
 	self.toggleListDisplay = function() {
-		console.log(self.flag);
-		if (self.flag) {
-			self.flag = false;
+		console.log(self.flag());
+		if (self.flag()) {
+			self.flag(0);
+			self.buttonText('Hide List !');
 		} else {
-			self.flag = true;
+			self.flag(1);
+			self.buttonText('Show list of places !');
 		}
-		self.display(self.flag);
-		showMarker(venue.marker, venue.markerInfoWindow);
 	};
 };
 

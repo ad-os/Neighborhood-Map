@@ -26,12 +26,12 @@
 	<nav>
 		<h1 class="nav-heading">Neighbourhood-Map</h1>
 	</nav>
-	<button class="showListSection" data-bind="click: toggleListDisplay">Show List Options</button>
-	<section id="list" data-bind="visible: display">
+	<button class="showListSection" data-bind="click: toggleListDisplay, text: buttonText"></button>
+	<section id="list" data-bind="style: { display: flag() == 1 ? 'none' : 'block' }">
 		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
 		<div class="listContainer">
 			<div data-bind="foreach: filteredItems">
-				<div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker}">
+				<div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker, touchend: $parent.enableMarker }">
 					<div class="listText">
 						<div class="listTextHeading" data-bind="text: name"></div>
 						<div class="listTextData" data-bind="text: formattedAddress"></div>
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 	</section>
-	<div id="map"></div>
+	<section id="map"></section>
 	<script>
 		var map;
 		function initMap() {

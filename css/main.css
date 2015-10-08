@@ -42,7 +42,7 @@ nav {
 .inputText {
 	font-size: xx-large;
 	padding: 15px;
-	margin: 15px 0 15px 0;
+	margin: 52px 0 15px 0;
 	width: 100%;
 	border: 0;
 	box-sizing: border-box;
@@ -163,6 +163,7 @@ input:focus {
 	}
 	#map {
 		width: 100%;
+		position: fixed;
 	}
 	.listItem {
 		min-height: 125px;
@@ -180,6 +181,9 @@ input:focus {
 		margin-top: 52px;
 		width: 100%;
 		min-height: 25px;
+	}
+	.listContainer {
+		opacity: 0.8;
 	}
 }
 
