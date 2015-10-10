@@ -26,28 +26,45 @@
 	<nav>
 		<h1 class="nav-heading">Neighbourhood-Map</h1>
 	</nav>
-	<button class="showListSection" data-bind="click: toggleListDisplay, text: buttonText"></button>
-	<section id="list" data-bind="style: { display: flag() == 1 ? 'none' : 'block' }">
+	<section class="modal" data-bind="visible: showAndHideModal">
+		<div>
+			<input type="text" class="cityName margin" placeholder="City..." data-bind="value: cityInput"/>
+		</div>
+		<div>
+			<input type="text" class="searchName margin" placeholder="Food, Place..." data-bind="value: searchInput" />
+		</div>
+		<button class="buttonModal margin" data-bind="click: getLatLng" >Find Me !</button> 
+	</section>
+	<button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button>
+	<section id="list" data-bind="visible: showAndHideList">
 		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
-		<div class="listContainer">
-			<div data-bind="foreach: filteredItems">
-				<div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker, touchend: $parent.enableMarker }">
-					<div class="listText">
-						<div class="listTextHeading" data-bind="text: name"></div>
-						<div class="listTextData" data-bind="text: formattedAddress"></div>
-					</div>
-					<div class="listImage">
-						<img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
-					</div>
+		<hr />
+		<div data-bind="foreach: filteredItems">
+			<div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker, touchend: $parent.enableMarker}">
+				<div class="listText">
+					<div class="listTextHeading" data-bind="text: name"></div>
+					<div class="listTextData" data-bind="text: formattedAddress"></div>
 				</div>
-				<hr />
+				<div class="listImage">
+					<img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
+				</div>
 			</div>
+			<hr />
 		</div>
 	</section>
-	<section id="map"></section>
+	<section class="mapDiv">
+		<div id="map"></div>
+	</section>
+	<section class="choiceButton" data-bind="click: toggleModal">
+		<img class="buttonImage" src="img/button.svg" alt="Choice Button!" />
+	</section>
 	<script>
-		var map;
+		var map,
+			geocoder,
+			latitude, 
+			longitude;
 		function initMap() {
+			geocoder = new google.maps.Geocoder();
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 28.6100, lng: 77.2300},
 				zoom: 12,

@@ -13,8 +13,9 @@ var apiDetails = {
  *@params - String cliendId, String clientSecret
  *@returns - String url
  */
-var generateDataUrl = function(clientId, clientSecret) {
-	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=28.61,77.23&query=donuts';
+var generateDataUrl = function(clientId, clientSecret, latLng, searchInput) {
+	console.log(latLng);
+	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=' + latLng.J + ',' + latLng.M + '&query=' + searchInput;
 	return url;
 };
 
@@ -121,21 +122,12 @@ var generateContent = function(name, address, formattedAddress) {
 	return content;
 }
 
-/*
- *@desc - knockout's viewmodel function.
- */
-var viewModel = function () {
-	var self = this;
-	self.url = generateDataUrl(apiDetails.clientId, apiDetails.clientSecret);
-	self.placesArray = ko.observableArray();//Array containing Objects which contains information about venues.
-	self.imagesArray = ko.observableArray();//Array to store images of the venues.
-	self.filter = ko.observable("");//input value by which we want to filter the places array.
-	self.flag = ko.observable(1); //Flag to show if list is visible of not (Specific to mobile UI) 
-	self.buttonText = ko.observable('Show List of places !');//Text on the button (Specific to mobile UI)
+var requestAjaxCall = function(self, latLng, searchInput) {
+	var url = generateDataUrl(apiDetails.clientId, apiDetails.clientSecret, latLng, searchInput);
 	/*
 	 *@desc - Ajax request to fetch objects containing image objects from the foursquare
 	 */
-	$.getJSON(self.url, function(data) {
+	$.getJSON(url, function(data) {
 		var venues = data.response.venues, //Array of returned venues from foursquare.
 			venue, //A single venue from array of venues.
 			imageUrl,//Contains the image url depending upon the venue.
@@ -180,6 +172,65 @@ var viewModel = function () {
 			self.imagesArray.push(finalImageUrl);
 		});
 	};
+}
+
+/*
+ *@desc - knockout's viewmodel function.
+ */
+var viewModel = function () {
+	var self = this;
+	var test = "adhyan";
+	self.placesArray = ko.observableArray();//Array containing Objects which contains information about venues.
+	self.imagesArray = ko.observableArray();//Array to store images of the venues.
+	self.filter = ko.observable("");//input value by which we want to filter the places array.
+	self.showAndHideList = ko.observable(true); //Observable to detect if list is visible of not (Specific to mobile UI) 
+	self.buttonText = ko.observable('Hide List ! Show Map !');//Text on the button (Specific to mobile UI)
+	self.showAndHideModal = ko.observable(false); //Observable to detect if list is visible or not.
+	self.cityInput = ko.observable(''); //Entered city by the user.
+	self.searchInput = ko.observable(''); //Entered search input by the user.
+
+	/*
+	 *@desc - A function to get latitude and longitude depending upon search inputs.
+	 */
+	self.getLatLng = function() {
+		var address = self.cityInput();
+		//If else condition to check whether city was made input or not.
+		if (address != '') {
+			//If else condition to check whether search item was made input or not.
+			if (self.searchInput() != '') {
+			localStorage.setItem('searchInput', self.searchInput());
+			geocoder.geocode( { 'address': address}, function(results, status) {
+					var latLng;
+					if (status == google.maps.GeocoderStatus.OK) {
+						latLng = results[0].geometry.location;
+						map.setCenter(latLng);
+						self.getQuery(latLng, self.searchInput());
+						self.toggleModal();
+						localStorage.setItem('Location', address);
+					} else {
+						alert("Geocode was not successful for the following reason: " + status);
+					}
+				});
+			} else {
+				alert("Please enter a search item!");
+			}
+		} else {
+			alert("Please enter a city name!");
+		}
+	};
+
+	/*
+	 *@desc - A function to request ajax calls depending upon the latitude and logitude.
+	 *@params - Object latLng.
+	 */
+	self.getQuery = function(latLng, searchInput) {
+		self.placesArray().length = 0;//On a new request making the places array as empty.
+		self.imagesArray().length = 0;
+		setMapOnAll(null);//removing the all markers from the map.
+		markers.length = 0;//On a new request making the markers array as empty.
+		requestAjaxCall(self, latLng, searchInput);
+	};
+
 	/*
 	 *@desc - Computing the filteredArray based on value in the filter variable.
 	 */
@@ -214,16 +265,50 @@ var viewModel = function () {
 	self.disableMarker = function(venue) {
 		venue.markerInfoWindow.close();
 	};
+	/*
+	 *@desc - To toggle the display of the list and text of the button 
+	 *(Specific to mobile UI).
+	 */
 	self.toggleListDisplay = function() {
-		console.log(self.flag());
-		if (self.flag()) {
-			self.flag(0);
-			self.buttonText('Hide List !');
-		} else {
-			self.flag(1);
+		if (self.showAndHideList()) {
+			self.showAndHideList(false);
 			self.buttonText('Show list of places !');
+		} else {
+			self.showAndHideList(true);
+			self.buttonText('Hide List ! Show Map !');
 		}
 	};
+	/*
+	 *@desc - To toggle the display the inputs.
+	 */	
+	self.toggleModal = function() {
+		if (self.showAndHideModal()) {
+			self.showAndHideModal(false);
+		} else {
+			self.showAndHideModal(true);
+		}
+	}
+
+	window.onload = function() {
+		var location = localStorage.getItem('Location'),
+			searchInput = localStorage.getItem('searchInput');
+		if (location && searchInput) {
+			var address = location;
+			console.log(address);
+			geocoder.geocode( { 'address': address}, function(results, status) {
+					var latLng;
+					if (status == google.maps.GeocoderStatus.OK) {
+						latLng = results[0].geometry.location;
+						map.setCenter(latLng);
+						self.getQuery(latLng, searchInput);
+					} else {
+						alert("Geocode was not successful for the following reason: " + status);
+					}
+				});
+		} else {
+			self.toggleModal();
+		}
+	}
 };
 
 ko.applyBindings(new viewModel());

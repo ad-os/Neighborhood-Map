@@ -20,12 +20,12 @@ nav {
 	height: 52px;
 	background: blue;
 	width: 100%;
-	z-index: 1;
-	position: absolute;
+	z-index: 2;
+	position: fixed;
 }
 
 #list {
-	margin: 77px 0 0 0;	
+	margin: 52px 0 0 0;	
 	width: 40%;
 	overflow-y: scroll;
 	overflow-x: hidden; 
@@ -35,6 +35,57 @@ nav {
 	width: 60%;
 }
 
+.modal {
+	z-index: 3;
+	width: 250px;
+	top: 35%;
+	left: 0;
+	right: 0;
+	margin: auto;
+	border-radius: 15px;
+	padding: 25px;
+	background-color: rgba(0, 0, 0, 0.64);
+	text-align: center;
+	position: absolute;
+}
+
+.margin {
+	margin: 10px 0 0 0;
+}
+
+.choiceButton {
+	z-index: 3;
+	width: 56px;
+	height: 56px;
+	bottom: 0;
+	right: 0;
+	position: fixed;
+	margin: 0 20px 20px 0;
+}
+
+.buttonModal {
+	border: 0;
+	border-radius: 10px;
+	width: 100%;
+	height: 50px;
+	font-size: x-large;
+	cursor: pointer;
+}
+
+.buttonImage {
+	width: 100%;
+}
+
+.searchName {
+	padding: 5px;
+	font-size: 15px;
+}
+
+.cityName {
+	padding: 5px;
+	font-size: 15px;
+}
+
 .listContainer {
 	background-color: #fafafa;
 }
@@ -42,7 +93,6 @@ nav {
 .inputText {
 	font-size: xx-large;
 	padding: 15px;
-	margin: 52px 0 15px 0;
 	width: 100%;
 	border: 0;
 	box-sizing: border-box;
@@ -70,8 +120,7 @@ input:focus {
 	display: flex;
 	min-height: 175px;
 	padding: 15px;
-	/*border: 2px solid #0e38a8;*/
-	margin: 5px 5px 0 5px;
+	margin: 0 5px 0 5px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -132,14 +181,26 @@ input:focus {
 	padding: 3px 0 0 40px;
 }
 
+.buttonList {
+	display: none;
+	height: 35px;
+	background-color: black;
+	color: white;
+	border: 0;
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.mapDiv {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+}
+
 @media only screen and (max-width: 1010px) {
 	.listItem {
 		min-height: 150px;
 	}
-}
-
-.showListSection {
-	display: none;
 }
 
 @media only screen and (max-width: 800px) {
@@ -156,6 +217,7 @@ input:focus {
 
 @media only screen and (max-width: 650px) {
 	#list {
+		margin-top: 87px;
 		width: 100%;
 		z-index: 1;
 		position: absolute;
@@ -163,7 +225,6 @@ input:focus {
 	}
 	#map {
 		width: 100%;
-		position: fixed;
 	}
 	.listItem {
 		min-height: 125px;
@@ -174,16 +235,16 @@ input:focus {
 	.listTextData {
 		font-size: 18px;
 	}
-	.showListSection {
+	.buttonList {
 		display: block;
-		z-index: 1;
-		position: absolute;
+		z-index: 2;
+		position: fixed;
 		margin-top: 52px;
 		width: 100%;
 		min-height: 25px;
 	}
-	.listContainer {
-		opacity: 0.8;
+	.listItem {
+		opacity: 0.9;
 	}
 }
 
