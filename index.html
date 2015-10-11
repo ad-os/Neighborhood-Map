@@ -27,7 +27,14 @@
 		<h1 class="nav-heading">Neighbourhood-Map</h1>
 	</nav>
 	<section class="error-div" data-bind="visible: showAndHideErrorDiv">
-		Adhyan
+		<div class="error-content">
+			<h3>I appeared may be due to the following reasons &#128529;</h4>
+			<p>1. The server may be down.</p>
+			<p>2. You may be disconnected to the internet.</p>
+			<h4>What you can do &#128526;</h4>
+			<p>1. Check your internet connection.</p>
+			<p>2. Refresh the page.</p>
+		</div>				
 	</section>
 	<section class="modal" data-bind="visible: showAndHideModal">
 		<div>
@@ -39,7 +46,7 @@
 		<button class="buttonModal margin" data-bind="click: getLatLng" >Find Me !</button> 
 	</section>
 	<button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button>
-	<section id="list" data-bind="visible: showAndHideList">
+	<section data-bind="visible: showAndHideList, css: { listOnFirstAppearance : flag() == '1', list: flag() != '1' }" >
 		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
 		<hr />
 		<div data-bind="foreach: filteredItems">
@@ -55,7 +62,7 @@
 			<hr />
 		</div>
 	</section>
-	<section class="mapDiv">
+	<section data-bind="css: { mapOnFirstAppearance : flag() == '1', mapDiv: flag() != '1' }">
 		<div id="map"></div>
 	</section>
 	<section class="choiceButton" data-bind="click: toggleModal">

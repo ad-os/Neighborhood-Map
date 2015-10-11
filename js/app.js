@@ -151,7 +151,7 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			formattedAddress = venue.location.formattedAddress[0];
 			address = venue.location.address;
 			latLng.lat = venue.location.lat;//Latitude for the venue
-			latLng.lng = venue.location.lng;//Logitude for the venue
+			latLng.lng = venue.location.lng;//Longitude for the venue
 			self.placesArray.push(new place(venue.name, latLng, i, formattedAddress, address));
 			self.bindImage(imageUrl);//Save the image url for current venue.
 		}
@@ -184,7 +184,8 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			}
 			self.imagesArray.push(finalImageUrl);
 		}).fail(function() {
-			self.showAndHideErrorDiv(true);
+			//If error occurs in requesting the image then use the default image.
+			self.imagesArray.push('img/X.png');
 		});
 	};
 }
@@ -202,7 +203,11 @@ var viewModel = function () {
 	self.showAndHideModal = ko.observable(false); //Observable to detect if modal is visible or not.
 	self.cityInput = ko.observable(''); //Entered city by the user.
 	self.searchInput = ko.observable(''); //Entered search input by the user.
-	self.showAndHideErrorDiv = ko.observable(false);
+	self.showAndHideErrorDiv = ko.observable(false);//A onservable to check if there is a error.If there is error then show.
+	self.flag = ko.observable(1); 
+	//The observable is used because a particular set of css classes 
+	//is used when the page is first served and after that another css 
+	//classes for the map div and the list div.
 	
 	/*
 	 *@desc - A function to get latitude and longitude depending upon search inputs.
@@ -224,6 +229,8 @@ var viewModel = function () {
 							self.getQuery(latLng, self.searchInput());
 							//Storing the location name in the browser's memory.
 							localStorage.setItem('Location', address);
+							self.toggleModal();
+							self.flag(0);
 						} else {
 							alert("Geocode was not successful for the following reason: " + status);
 						}
@@ -320,6 +327,8 @@ var viewModel = function () {
 		if(typeof geocoder !== 'undefined') { 
 			if (location && searchInput) {
 				var address = location;
+				//
+				self.flag(0);
 				geocoder.geocode( { 'address': address}, function(results, status) {
 						var latLng;
 						if (status == google.maps.GeocoderStatus.OK) {
@@ -331,6 +340,8 @@ var viewModel = function () {
 						}
 					});
 			} else {
+				//If no location and search input is found on localstorage then show the model to
+				//get input from the user.
 				self.toggleModal();
 			}
 		}

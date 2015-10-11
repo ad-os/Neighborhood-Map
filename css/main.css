@@ -29,10 +29,21 @@ nav {
 	width: 100%;
 	z-index: 4;
 	margin-top: 52px;
-	background-color: azure;
+	background-color: beige;
 }
 
-#list {
+.error-content {
+	left: 0;
+	right: 0;
+	max-width: 500px;
+	margin: auto;
+	text-align: center;
+	background-color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+	position: absolute;
+}
+
+.list {
 	margin: 52px 0 0 0;	
 	width: 40%;
 	overflow-y: scroll;
@@ -121,7 +132,7 @@ input:focus {
 
 #map {
 	height: 100%;
-	width: 60%;
+	width: 100%;
 }
 
 .listItem {
@@ -171,10 +182,6 @@ input:focus {
 	background-color: #e6ebf6;
 }
 
-.markerContent {
-
-}
-
 .markerHeader {
 	padding: 3px 0 0 40px;
 	font-size: 20px;
@@ -201,9 +208,19 @@ input:focus {
 }
 
 .mapDiv {
+	width: 60%;
+	height: 100%;
+	position: fixed;
+}
+
+.mapOnFirstAppearance {
 	width: 100%;
 	height: 100%;
 	position: fixed;
+}
+
+.listOnFirstAppearance {
+	display: none;
 }
 
 @media only screen and (max-width: 1010px) {
@@ -225,14 +242,14 @@ input:focus {
 }
 
 @media only screen and (max-width: 650px) {
-	#list {
+	.list {
 		margin-top: 87px;
 		width: 100%;
 		z-index: 1;
 		position: absolute;
 		overflow-y: hidden; 
 	}
-	#map {
+	.mapDiv {
 		width: 100%;
 	}
 	.listItem {
