@@ -24,6 +24,14 @@ nav {
 	position: fixed;
 }
 
+.error-div {
+	position: absolute;
+	width: 100%;
+	z-index: 4;
+	margin-top: 52px;
+	background-color: azure;
+}
+
 #list {
 	margin: 52px 0 0 0;	
 	width: 40%;
@@ -74,6 +82,7 @@ nav {
 
 .buttonImage {
 	width: 100%;
+	cursor: pointer;
 }
 
 .searchName {
