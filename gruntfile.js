@@ -36,13 +36,61 @@ module.exports = function(grunt) {
 					dest: 'img/'
 				}]
 			}
-		}
+		},
+		//inline css
+		critical: {
+			test: {
+				options: {
+					base: './',
+					css: [
+						'css/main.css'
+					]
+				},
+				src: 'index.html',
+				dest: 'index.html'
+			}
+		},
+		//uglify js
+		uglify: {
+			build: {
+				src: 'js/app.js',
+				dest: 'js/app.js'
+			},
+			dev: {
+				options: {
+					beautify: true,
+					mangle: false,
+					compress: true,
+					preserveComments: 'all'
+				},
+				src: 'js/app.js',
+				dest: 'js/app.js'
+			}
+		},
+		// uglify html 
+		htmlmin: {                                    
+			dist: {                                     
+				options: {                                 
+					removeComments: true,
+					collapseWhitespace: true
+				},
+				files: {                                   
+					'index.html': 'index.html',
+				}
+			}
+		}		
 	});
 
 	//Load plugins
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-critical');
 	grunt.loadNpmTasks('grunt-browser-sync');
 	grunt.loadNpmTasks('grunt-responsive-images');
+	grunt.loadNpmTasks('grunt-contrib-htmlmin');
 	//Register Tasks
 	grunt.registerTask('default', ['browserSync:dev']);
 	grunt.registerTask('build', ['responsive_images:dev']);
+	grunt.registerTask('minifyjs', ['uglify:build']);
+	grunt.registerTask('minifyhtml', ['htmlmin']);
+	grunt.registerTask('minifycss', ['critical:test']);
 };

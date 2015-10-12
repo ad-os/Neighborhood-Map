@@ -16,6 +16,8 @@ hr {
 	margin: 10px 30px 10px 30px; 
 }
 
+/*nav*/
+
 nav {
 	height: 52px;
 	background: blue;
@@ -23,6 +25,14 @@ nav {
 	z-index: 2;
 	position: fixed;
 }
+
+.nav-heading {
+	text-align: center;
+	color: white;
+	font-size: 25px;
+}
+
+/*error-divs*/
 
 .error-div {
 	position: absolute;
@@ -44,16 +54,7 @@ nav {
 	position: absolute;
 }
 
-.list {
-	margin: 52px 0 0 0;	
-	width: 40%;
-	overflow-y: scroll;
-	overflow-x: hidden; 
-}
-
-.mapContainer {
-	width: 60%;
-}
+/*modal*/
 
 .modal {
 	z-index: 3;
@@ -69,20 +70,6 @@ nav {
 	position: absolute;
 }
 
-.margin {
-	margin: 10px 0 0 0;
-}
-
-.choiceButton {
-	z-index: 3;
-	width: 56px;
-	height: 56px;
-	bottom: 0;
-	right: 0;
-	position: fixed;
-	margin: 0 20px 20px 0;
-}
-
 .buttonModal {
 	border: 0;
 	border-radius: 10px;
@@ -92,48 +79,29 @@ nav {
 	cursor: pointer;
 }
 
-.buttonImage {
-	width: 100%;
-	cursor: pointer;
-}
+/*button To toggle list*/
 
-.searchName {
-	padding: 5px;
-	font-size: 15px;
-}
-
-.cityName {
-	padding: 5px;
-	font-size: 15px;
-}
-
-.listContainer {
-	background-color: #fafafa;
-}
-
-.inputText {
-	font-size: xx-large;
-	padding: 15px;
-	width: 100%;
-	border: 0;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-}
-
-input:focus {
-	outline: 0;
-}
-
-.nav-heading {
-	text-align: center;
+.buttonList {
+	display: none;
+	height: 35px;
+	background-color: black;
 	color: white;
-	font-size: 25px;
+	border: 0;
+	font-weight: bold;
+	font-size: 15px;
 }
 
-#map {
-	height: 100%;
-	width: 100%;
+/*list*/
+
+.list {
+	margin: 52px 0 0 0;	
+	width: 40%;
+	overflow-y: scroll;
+	overflow-x: hidden; 
+}
+
+.listOnFirstAppearance {
+	display: none;
 }
 
 .listItem {
@@ -168,11 +136,18 @@ input:focus {
 	transition: all .2s ease-in-out;
 }
 
-.img-responsive {
-	display: block;
+.inputText {
+	font-size: xx-large;
+	padding: 15px;
 	width: 100%;
-	height: auto;
-	border-radius: 10px;
+	border: 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+input:focus {
+	outline: 0;
 }
 
 .listItem:hover .listImage {
@@ -183,35 +158,15 @@ input:focus {
 	background-color: #e6ebf6;
 }
 
-.markerHeader {
-	padding: 3px 0 0 40px;
-	font-size: 20px;
-	font-weight: bold;
-	color: #0e38a8;
-}
+/*map*/
 
-.placeHolder {
-	float: left;
-}
-
-.markerText {
-	padding: 3px 0 0 40px;
-}
-
-.buttonList {
-	display: none;
-	height: 35px;
-	background-color: black;
-	color: white;
-	border: 0;
-	font-weight: bold;
-	font-size: 15px;
-}
-
-.mapDiv {
-	width: 60%;
+#map {
 	height: 100%;
-	position: fixed;
+	width: 100%;
+}
+
+.mapContainer {
+	width: 60%;
 }
 
 .mapOnFirstAppearance {
@@ -220,8 +175,67 @@ input:focus {
 	position: fixed;
 }
 
-.listOnFirstAppearance {
-	display: none;
+.mapDiv {
+	width: 60%;
+	height: 100%;
+	position: fixed;
+}
+
+/*marker*/
+
+.markerHeader {
+	padding: 3px 0 0 40px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #0e38a8;
+}
+
+.markerText {
+	padding: 3px 0 0 40px;
+}
+
+.margin {
+	margin: 10px 0 0 0;
+}
+
+.choiceButton {
+	z-index: 3;
+	width: 56px;
+	height: 56px;
+	bottom: 0;
+	right: 0;
+	position: fixed;
+	margin: 0 20px 20px 0;
+}
+
+.buttonImage {
+	width: 100%;
+	cursor: pointer;
+}
+
+.searchName {
+	padding: 5px;
+	font-size: 15px;
+}
+
+.cityName {
+	padding: 5px;
+	font-size: 15px;
+}
+
+.listContainer {
+	background-color: #fafafa;
+}
+
+.img-responsive {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+}
+
+.placeHolder {
+	float: left;
 }
 
 @media only screen and (max-width: 1010px) {
