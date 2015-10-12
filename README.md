@@ -12,8 +12,10 @@
 2. Will notify you if user gets offline.
 3. A error page is redirected if no ajax call is received.
 4. The browser stores the state of your last search and location.
+5. Optimized for mobile UI.(Do check it)
 
 
->Note: You can get the modal back by clicking on the icon present in the bottom right corner of your page and search for another item and location.
+>Note: 
+>You can get the modal back by clicking on the icon present in the bottom right corner of your page and search for another item and location.
 
 >Enjoy:sparkles:
