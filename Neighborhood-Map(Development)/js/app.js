@@ -328,10 +328,16 @@ var viewModel = function () {
 		}
 	};
 
+	/*
+	 *@desc - Load the css for the list of items.
+	 */
 	self.listCss = ko.pureComputed(function() {
 		return self.flag() == 1 ? "listOnFirstAppearance" : "list";		
 	})
 
+	/*
+	 *@desc - Load the css for the map.
+	 */
 	self.mapCss = ko.pureComputed(function() {
 		return self.flag() == 1 ? "mapOnFirstAppearance" : "mapDiv";		
 	})
