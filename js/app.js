@@ -138,7 +138,11 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 	/*
 	 *@desc - Ajax request to fetch objects containing image objects from the foursquare
 	 */
-	$.getJSON(url, function(data) {
+	$.ajax({
+		url: url,
+		dataType: 'json',
+		timeout: 3000	
+	}).done(function(data) {
 		var venues = data.response.venues, //Array of returned venues from foursquare.
 			venue, //A single venue from array of venues.
 			imageUrl,//Contains the image url depending upon the venue.
@@ -170,7 +174,11 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			venueImages,
 			venueImage,
 			venueImageCount;
-		$.getJSON(imageUrl, function(data) {
+		$.ajax({
+			url: imageUrl,
+			dataType: 'json',
+			timeout: 3000			
+		}).done(function(data) {
 			venueImages = data.response.photos.items,
 			venueImage = venueImages[0],
 			venueImageCount = data.response.photos.count;
@@ -241,16 +249,18 @@ var viewModel = function () {
 			} else {
 				alert("Please enter a city name!");
 			}	
+		} else {
+			self.showAndHideErrorDiv(true);
 		}
 	};
 
 	/*
 	 *@desc - A function to request ajax calls depending upon the latitude and logitude.
-	 *@params - Object latLng.
+	 *@params - Object latLng, String searchInput.
 	 */
 	self.getQuery = function(latLng, searchInput) {
 		self.placesArray().length = 0;//On a new request making the places array as empty.
-		self.imagesArray().length = 0;
+		self.imagesArray().length = 0;//On a new request making the images array as empty.
 		setMapOnAll(null);//removing the all markers from the map.
 		markers.length = 0;//On a new request making the markers array as empty.
 		requestAjaxCall(self, latLng, searchInput);
@@ -317,6 +327,14 @@ var viewModel = function () {
 			self.showAndHideModal(true);
 		}
 	};
+
+	self.listCss = ko.pureComputed(function() {
+		return self.flag() == 1 ? "listOnFirstAppearance" : "list";		
+	})
+
+	self.mapCss = ko.pureComputed(function() {
+		return self.flag() == 1 ? "mapOnFirstAppearance" : "mapDiv";		
+	})
 	
 	/*
 	 *@desc - Load the function when all the dom, css and scripts have been loaded.
@@ -344,6 +362,8 @@ var viewModel = function () {
 				//get input from the user.
 				self.toggleModal();
 			}
+		} else {
+			self.showAndHideErrorDiv(true);
 		}
 	};
 };
