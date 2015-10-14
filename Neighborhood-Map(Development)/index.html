@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Neighborhood Map</title>
 	<link rel="stylesheet" type="text/css" href="css/offline-theme-dark.css">
 	<link rel="stylesheet" type="text/css" href="css/offline-language-english-indicator.css">
@@ -28,9 +28,9 @@
 		<h1 class="nav-heading">Neighbourhood-Map</h1>
 	</nav>
 	<!-- error div -->
-	<section class="error-div" data-bind="visible: showAndHideErrorDiv">
+	<section class="error-div" data-bind="visible: showAndHideErrorDiv" style="display: none">
 		<div class="error-content">
-			<h3>I appeared may be due to the following reasons &#128529;</h4>
+			<h4>I appeared may be due to the following reasons &#128529;</h4>
 			<p>1. The server may be down.</p>
 			<p>2. You may be disconnected to the internet.</p>
 			<h4>What you can do &#128526;</h4>
@@ -39,23 +39,25 @@
 		</div>				
 	</section>
 	<!-- modal div -->
-	<section class="modal" data-bind="visible: showAndHideModal">
-		<div>
-			<input type="text" class="cityName margin" placeholder="City..." data-bind="value: cityInput"/>
-		</div>
-		<div>
-			<input type="text" class="searchName margin" placeholder="Food, Place..." data-bind="value: searchInput" />
-		</div>
-		<button class="buttonModal margin" data-bind="click: getLatLng" >Find Me !</button> 
+	<section class="modal" data-bind="visible: showAndHideModal" style="display: none">
+		<form data-bind="submit: getLatLng">
+			<div>
+				<input type="text" class="cityName margin" placeholder="City..." data-bind="value: cityInput">
+			</div>
+			<div>
+				<input type="text" class="searchName margin" placeholder="Food, Place..." data-bind="value: searchInput" />
+			</div>
+			<button class="buttonModal margin" type="submit" >Find Me !</button>
+		</form> 
 	</section>
 	<!-- Toggles the list on click -->
 	<button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button>
 	<!-- List Section -->
 	<section data-bind="visible: showAndHideList, css: listCss" >
 		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
-		<hr />
+		<hr>
 		<div data-bind="foreach: filteredItems">
-			<div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker, touchend: $parent.enableMarker}">
+			<div class="listItem" data-bind="event: { mouseover: $parent.enableMarkerHover, mouseout: $parent.disableMarker}, click: $parent.enableMarkerClick">
 				<div class="listText">
 					<div class="listTextHeading" data-bind="text: name"></div>
 					<div class="listTextData" data-bind="text: formattedAddress"></div>
@@ -64,7 +66,7 @@
 					<img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}">
 				</div>
 			</div>
-			<hr />
+			<hr>
 		</div>
 	</section>
 	<!-- map section -->
@@ -79,17 +81,21 @@
 		var map,
 			geocoder,
 			latitude, 
-			longitude;
+			longitude,
+			infowindow,
+			bounds;
 		function initMap() {
 			geocoder = new google.maps.Geocoder();
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 28.6100, lng: 77.2300},
-				zoom: 10,
+			});
+			infowindow = new google.maps.InfoWindow({
+				width: 400
 			});
 		}
 	</script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA12OwsmROzyF7ryMqu3X6tHpi14DHeKsM&callback=initMap">
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rx6-z7o1FFMDtQ50Zc6guvJuzNTq_5w&signed_in=true&callback=initMap">
 	</script>
 	<script src="js/knockout.js"></script>
 	<script src="js/offline.min.js"></script>

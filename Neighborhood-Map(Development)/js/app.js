@@ -1,5 +1,4 @@
 var markers = []; //An array containing all the markers.
-var createMarker;
 
 /*
  *@desc - A object containing details for fetching the data from foursquare.
@@ -15,7 +14,7 @@ var apiDetails = {
  *@returns - String url
  */
 var generateDataUrl = function(clientId, clientSecret, latLng, searchInput) {
-	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=' + latLng.J + ',' + latLng.M + '&query=' + searchInput;
+	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=' + latLng.lat() + ',' + latLng.lng() + '&query=' + searchInput;
 	return url;
 };
 
@@ -38,7 +37,7 @@ var generateImageUrl = function(clientId, clientSecret, venueId) {
 var place = function(name, latLng, imageIndex, formattedAddress, address) {
 	this.name = ko.observable(name);
 	this.marker = createMarker(latLng, name, address, formattedAddress);
-	this.markerInfoWindow = createInfoWindow(name, address, formattedAddress);
+	this.markerInfoWindowContent = generateContent(name, address, formattedAddress);
 	this.formattedAddress = ko.observable(formattedAddress);
 	this.address = ko.observable(address);
 	this.imageIndex = ko.observable(imageIndex);
@@ -54,40 +53,16 @@ var createMarker = function(latLng, name, address, formattedAddress) {
 		map: map,
 		position: latLng,
 		animation: google.maps.Animation.DROP,
-		title: name
+		title: name,
+		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
-	var toggleBounce =function() {
-		if (marker.getAnimation() !== null) {
-			marker.setAnimation(null);
-		} else {
-			marker.setAnimation(google.maps.Animation.BOUNCE);
-			//Stop bouncing markers after 2 seconds.
-			setTimeout(function(){
-				toggleBounce();
-			}, 2000);
-		}
-	}
 	marker.addListener('click', function() {
-		var infowindow = createInfoWindow(name, address, formattedAddress);
-		showMarker(marker, infowindow);
+		showMarker(marker, generateContent(name, address, formattedAddress));
+		animateMarker(marker);
 	});
-	marker.addListener('click', toggleBounce);
 	markers.push(marker);
 	return marker;
 };
-
-/*
- *@desc - A function to create the infowindow.
- *@params - String name: name of the place,String address: address of the place, 
- *String formattedAddress: formattedaddress for the place.
- */
-var createInfoWindow = function(name, address, formattedAddress) {
-	var infowindow = new google.maps.InfoWindow({
-		content: generateContent(name, address, formattedAddress),
-		width: 400
-	});
-	return infowindow;
-}
 
 /*
  *@desc - A function to show the infowindow for the marker.
@@ -95,7 +70,8 @@ var createInfoWindow = function(name, address, formattedAddress) {
  *String address: address of the place, String formattedAddress: formatted
  *address for the place.
  */
-var showMarker = function(marker, infowindow) {
+var showMarker = function(marker, content) {
+	infowindow.setContent(content);
 	infowindow.open(map, marker);
 }
 
@@ -108,6 +84,24 @@ var setMapOnAll = function(map) {
 		markers[i].setMap(map);
 	}
 };
+
+/*
+ *@desc - Animates the marker on the screen.
+ *@params - Object marker.
+ */
+var animateMarker = function(marker) {
+	if (marker.getAnimation() !== null) {
+		marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+		marker.setAnimation(null);
+	} else {
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+		marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+		//Stop bouncing markers after 2 seconds.
+		setTimeout(function(){
+			animateMarker(marker);
+		}, 1000);
+	}	
+}
 
 /*
  *@desc - generates the content for markers.
@@ -148,7 +142,9 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			imageUrl,//Contains the image url depending upon the venue.
 			formattedAddress,
 			address,
-			latLng = {};
+			latLng = {},
+			latLngObject;
+			bounds = new google.maps.LatLngBounds();//This represents a rectangle in geographical coordinates.
 		for (var i = 0; i < venues.length; i++) {
 			venue = venues[i]; 
 			imageUrl = generateImageUrl(apiDetails.clientId, apiDetails.clientSecret, venue.id);
@@ -156,9 +152,12 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			address = venue.location.address;
 			latLng.lat = venue.location.lat;//Latitude for the venue
 			latLng.lng = venue.location.lng;//Longitude for the venue
+			latLngObject = new google.maps.LatLng(latLng.lat, latLng.lng);//It is a point in geographical coordinates.
+			bounds.extend(latLngObject);//Extend this area to contain a new latitude and longitude.
 			self.placesArray.push(new place(venue.name, latLng, i, formattedAddress, address));
 			self.bindImage(imageUrl);//Save the image url for current venue.
 		}
+		map.fitBounds(bounds);//set the viewport to contain the given points.
 	}).fail(function() {
 		self.showAndHideErrorDiv(true);
 	});
@@ -196,6 +195,18 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			self.imagesArray.push('img/X.png');
 		});
 	};
+}
+
+/*
+ *@desc - A function to create a custom icon for map markers.
+ */
+var createCustomPin = function() {
+	var pinColor = '#5233b7';
+	var pinImage = new google.maps.MarkerImage("https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+		new google.maps.Size(21, 34),
+		new google.maps.Point(0,0),
+		new google.maps.Point(10, 34));
+	return pinImage;
 }
 
 /*
@@ -291,16 +302,21 @@ var viewModel = function () {
 	 *@desc - A binding function to show infowindow on mousehover.
 	 *@params - Object place: Current place.
 	 */
-	self.enableMarker = function(venue) {
-		showMarker(venue.marker, venue.markerInfoWindow);
+	self.enableMarkerHover = function(venue) {
+		showMarker(venue.marker, venue.markerInfoWindowContent);
+	};
+
+	self.enableMarkerClick = function(venue) {
+		showMarker(venue.marker, venue.markerInfoWindowContent);
+		animateMarker(venue.marker);
 	};
 
 	/*
 	 *@desc - To close the infowindow on mouseout.
 	 *@params - Object place: Current place.
 	 */
-	self.disableMarker = function(venue) {
-		venue.markerInfoWindow.close();
+	self.disableMarker = function() {
+		infowindow.close();
 	};
 
 	/*
@@ -341,7 +357,7 @@ var viewModel = function () {
 	self.mapCss = ko.pureComputed(function() {
 		return self.flag() == 1 ? "mapOnFirstAppearance" : "mapDiv";		
 	})
-	
+		
 	/*
 	 *@desc - Load the function when all the dom, css and scripts have been loaded.
 	 */
@@ -351,7 +367,6 @@ var viewModel = function () {
 		if(typeof geocoder !== 'undefined') { 
 			if (location && searchInput) {
 				var address = location;
-				//
 				self.flag(0);
 				geocoder.geocode( { 'address': address}, function(results, status) {
 						var latLng;
@@ -374,4 +389,5 @@ var viewModel = function () {
 	};
 };
 
-ko.applyBindings(new viewModel());
+var vm = new viewModel();
+ko.applyBindings(vm);
