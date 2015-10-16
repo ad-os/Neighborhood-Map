@@ -1,11 +1,13 @@
 var markers = []; //An array containing all the markers.
+var instaLinks = []; //An array containing links to instagram pages based on search input..
 
 /*
  *@desc - A object containing details for fetching the data from foursquare.
  */
 var apiDetails = {
 	clientId: 'AQKR5W0CRVB4SPIE5C2XJDJJQH0IS2BWGWS3QJY0CUYL2F1F',
-	clientSecret: 'RYVS3A2URZDDZURSDNOFVXEVQWSECAXXXFFNAB1IAJY2BV0N'
+	clientSecret: 'RYVS3A2URZDDZURSDNOFVXEVQWSECAXXXFFNAB1IAJY2BV0N',
+	instagramAccessToken: '2235758096.1fb234f.984dee2be36946789a4427ff1ff7dd62'
 };
 
 /*
@@ -17,6 +19,11 @@ var generateDataUrl = function(clientId, clientSecret, latLng, searchInput) {
 	var url = 'https://api.foursquare.com/v2/venues/search?client_id=' + clientId + '&client_secret=' + clientSecret + '&v=20130815&ll=' + latLng.lat() + ',' + latLng.lng() + '&query=' + searchInput;
 	return url;
 };
+
+var generateInstaUrl = function(searchInput) {
+	var url = 'https://api.instagram.com/v1/tags/' + searchInput + '/media/recent?access_token=' + apiDetails.instagramAccessToken;
+	return url;
+}
 
 /*
  *@desc - A function that returns url to fetch images from foursquare.
@@ -34,13 +41,14 @@ var generateImageUrl = function(clientId, clientSecret, venueId) {
  *int index: this is index for image, String formattedAddress: complete address for the venue,
  *String address: address for the venue.
  */
-var place = function(name, latLng, imageIndex, formattedAddress, address) {
-	this.name = ko.observable(name);
-	this.marker = createMarker(latLng, name, address, formattedAddress);
-	this.markerInfoWindowContent = generateContent(name, address, formattedAddress);
-	this.formattedAddress = ko.observable(formattedAddress);
-	this.address = ko.observable(address);
-	this.imageIndex = ko.observable(imageIndex);
+var place = function(name, latLng, imageIndex, formattedAddress, address, venueIconUrl, searchInput) {
+	var self = this;
+	self.name = ko.observable(name);
+	self.marker = createMarker(latLng, name, address, formattedAddress, venueIconUrl, searchInput);
+	self.markerInfoWindowContent = generateContent(name, address, formattedAddress, venueIconUrl, searchInput);
+	self.formattedAddress = ko.observable(formattedAddress);
+	self.address = ko.observable(address);
+	self.imageIndex = ko.observable(imageIndex);
 };
 
 /*
@@ -48,7 +56,7 @@ var place = function(name, latLng, imageIndex, formattedAddress, address) {
  *@params - Object latLng, String name: The name of the venue, String address: The address
  *of the venue, String formattedAddress: Formatted address of the venue.
  */
-var createMarker = function(latLng, name, address, formattedAddress) {
+var createMarker = function(latLng, name, address, formattedAddress, venueIconUrl, searchInput) {
 	var marker = new google.maps.Marker({
 		map: map,
 		position: latLng,
@@ -57,7 +65,7 @@ var createMarker = function(latLng, name, address, formattedAddress) {
 		icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
 	});
 	marker.addListener('click', function() {
-		showMarker(marker, generateContent(name, address, formattedAddress));
+		showMarker(marker, generateContent(name, address, formattedAddress, venueIconUrl, searchInput));
 		animateMarker(marker);
 	});
 	markers.push(marker);
@@ -73,7 +81,7 @@ var createMarker = function(latLng, name, address, formattedAddress) {
 var showMarker = function(marker, content) {
 	infowindow.setContent(content);
 	infowindow.open(map, marker);
-}
+};
 
 /*
  *@desc - Sets all the markers on the map
@@ -101,26 +109,28 @@ var animateMarker = function(marker) {
 			animateMarker(marker);
 		}, 1000);
 	}	
-}
+};
 
 /*
  *@desc - generates the content for markers.
  *@params - String name: Name of the venue, String address: Address of the venue,
  *String formattedAddress: formatted address of the venue.
  */
-var generateContent = function(name, address, formattedAddress) {
+var generateContent = function(name, address, formattedAddress, venueIconUrl, searchInput) {
 	var headerDiv = '<div class="markerHeader">' + name + '</div>',
-		imageDiv = '<img class="placeHolder" src="img/placeholder.png" />',
+		imageDiv = '<img class="placeHolder" src="' + venueIconUrl + '">',
 		addressDiv = '<div class="markerText">' + address + '</div>',
+		//Using ternary operator to set instagram link i.e if available set else leave empty.
+		instaDiv = instaLinks.length > 0 ? '<div class="instaClass" ><a href=' + instaLinks[Math.floor(Math.random() * instaLinks.length)] + ' target="_blank">' + searchInput + ' @ insta</a></div></section>' : '</section>',
 		content;
 	if (address !== undefined) {
-		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv;
+		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv + instaDiv;
 	} else {
 		addressDiv = '<div class="markerText">' + formattedAddress + '</div>',
-		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv;
+		content = '<section class="markerContent">' + imageDiv + headerDiv + addressDiv + instaDiv;
 	}
 	return content;
-}
+};
 
 /*
  *@desc - A ajax request to fetch data from the foursquare.
@@ -142,19 +152,30 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			imageUrl,//Contains the image url depending upon the venue.
 			formattedAddress,
 			address,
-			latLng = {},
+			venueIconUrl,
+			venueIconPrefix,
+			venueIconSuffix,
 			latLngObject;
 			bounds = new google.maps.LatLngBounds();//This represents a rectangle in geographical coordinates.
 		for (var i = 0; i < venues.length; i++) {
+			var latLng = {};
 			venue = venues[i]; 
 			imageUrl = generateImageUrl(apiDetails.clientId, apiDetails.clientSecret, venue.id);
 			formattedAddress = venue.location.formattedAddress[0];
 			address = venue.location.address;
 			latLng.lat = venue.location.lat;//Latitude for the venue
 			latLng.lng = venue.location.lng;//Longitude for the venue
+			//If else clause to check if icon for the venue exist or not.
+			if (venue.categories.length != 0) {
+				venueIconPrefix =  venue.categories[0].icon.prefix;
+				venueIconSuffix = venue.categories[0].icon.suffix;
+				venueIconUrl = venueIconPrefix + '32' + venueIconSuffix;
+			} else {
+				venueIconUrl = 'img/placeholder.png';
+			}
 			latLngObject = new google.maps.LatLng(latLng.lat, latLng.lng);//It is a point in geographical coordinates.
 			bounds.extend(latLngObject);//Extend this area to contain a new latitude and longitude.
-			self.placesArray.push(new place(venue.name, latLng, i, formattedAddress, address));
+			self.placesArray.push(new place(venue.name, latLng, i, formattedAddress, address, venueIconUrl, searchInput));
 			self.bindImage(imageUrl);//Save the image url for current venue.
 		}
 		map.fitBounds(bounds);//set the viewport to contain the given points.
@@ -195,18 +216,25 @@ var requestAjaxCall = function(self, latLng, searchInput) {
 			self.imagesArray.push('img/X.png');
 		});
 	};
-}
+};
 
 /*
- *@desc - A function to create a custom icon for map markers.
+ *@desc - Request instagram Url's depending upon search input.
  */
-var createCustomPin = function() {
-	var pinColor = '#5233b7';
-	var pinImage = new google.maps.MarkerImage("https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
-		new google.maps.Size(21, 34),
-		new google.maps.Point(0,0),
-		new google.maps.Point(10, 34));
-	return pinImage;
+var requestInstagram = function(searchInput) {
+	var url = generateInstaUrl(searchInput);
+	$.ajax({
+		url: url,
+		dataType: 'jsonp',
+		method: 'GET'
+	}).done(function(data){
+		var instaData = data.data;
+		for (var i = 0; i < instaData.length; i++) {
+			instaLinks.push(instaData[i].link);
+		}
+	}).fail(function() {
+		instaLinks.length = 0;//Making the instaLinks array length equivalent to zero.
+	});
 }
 
 /*
@@ -234,6 +262,7 @@ var viewModel = function () {
 	self.getLatLng = function() {
 		if (typeof geocoder !== 'undefined') {
 			var address = self.cityInput();
+			requestInstagram(self.searchInput());
 			//If else condition to check whether city was made input or not.
 			if (address != '') {
 				//If else condition to check whether search item was made input or not.
@@ -272,6 +301,7 @@ var viewModel = function () {
 	self.getQuery = function(latLng, searchInput) {
 		self.placesArray().length = 0;//On a new request making the places array as empty.
 		self.imagesArray().length = 0;//On a new request making the images array as empty.
+		instaLinks.length = 0;
 		setMapOnAll(null);//removing the all markers from the map.
 		markers.length = 0;//On a new request making the markers array as empty.
 		requestAjaxCall(self, latLng, searchInput);
@@ -363,7 +393,9 @@ var viewModel = function () {
 	 */
 	window.onload = function() {
 		var location = localStorage.getItem('Location'),
-			searchInput = localStorage.getItem('searchInput');
+			searchInput = localStorage.getItem('searchInput'),
+			startPos;
+		requestInstagram(searchInput);
 		if(typeof geocoder !== 'undefined') { 
 			if (location && searchInput) {
 				var address = location;
@@ -378,7 +410,7 @@ var viewModel = function () {
 							alert("Geocode was not successful for the following reason: " + status);
 						}
 					});
-			} else {
+ 			} else {
 				//If no location and search input is found on localstorage then show the model to
 				//get input from the user.
 				self.toggleModal();

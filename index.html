@@ -67,7 +67,7 @@ nav {
 	padding: 25px;
 	background-color: rgba(0, 0, 0, 0.64);
 	text-align: center;
-	position: absolute;
+	position: fixed;
 }
 
 .buttonModal {
@@ -166,14 +166,19 @@ nav {
 			wf.async = 'true';
 			var s = document.getElementsByTagName('script')[0];
 			s.parentNode.insertBefore(wf, s);
-		})();</script></head><body><nav><h1 class="nav-heading">Neighbourhood-Map</h1></nav><section class="error-div" data-bind="visible: showAndHideErrorDiv"><div class="error-content"><h3>I appeared may be due to the following reasons &#128529;<p>1. The server may be down.</p><p>2. You may be disconnected to the internet.</p><h4>What you can do &#128526;</h4><p>1. Check your internet connection.</p><p>2. Refresh the page.</p></h3></div></section><section class="modal" data-bind="visible: showAndHideModal"><div><input type="text" class="cityName margin" placeholder="City..." data-bind="value: cityInput"></div><div><input type="text" class="searchName margin" placeholder="Food, Place..." data-bind="value: searchInput"></div><button class="buttonModal margin" data-bind="click: getLatLng">Find Me !</button></section><button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button><section data-bind="visible: showAndHideList, css: listCss"><input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus><hr><div data-bind="foreach: filteredItems"><div class="listItem" data-bind="event: { mouseover: $parent.enableMarker, mouseout: $parent.disableMarker, touchend: $parent.enableMarker}"><div class="listText"><div class="listTextHeading" data-bind="text: name"></div><div class="listTextData" data-bind="text: formattedAddress"></div></div><div class="listImage"><img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}"></div></div><hr></div></section><section data-bind="css: mapCss"><div id="map"></div></section><section class="choiceButton" data-bind="click: toggleModal"><img class="buttonImage" src="img/button.svg" alt="Choice Button!"></section><script>var map,
+		})();</script></head><body><nav><h1 class="nav-heading">Neighbourhood-Map</h1></nav><section class="error-div" data-bind="visible: showAndHideErrorDiv" style="display: none"><div class="error-content"><h4>I appeared may be due to the following reasons &#128529;</h4><p>1. The server may be down.</p><p>2. You may be disconnected to the internet.</p><p>3. The requested page does not exist.</p><h4>What you can do &#128526;</h4><p>1. Check your internet connection.</p><p>2. Refresh the page.</p></div></section><section class="modal" data-bind="visible: showAndHideModal" style="display: none"><form data-bind="submit: getLatLng"><div><input type="text" class="cityName margin" placeholder="City..." data-bind="value: cityInput"></div><div><input type="text" class="searchName margin" placeholder="Food, Place..." data-bind="value: searchInput"></div><button class="buttonModal margin" type="submit">Find Me !</button></form></section><button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button><section data-bind="visible: showAndHideList, css: listCss"><input id="autocomplete" class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus><hr><div data-bind="foreach: filteredItems"><div class="listItem" data-bind="event: { mouseover: $parent.enableMarkerHover}, click: $parent.enableMarkerClick"><div class="listText"><div class="listTextHeading" data-bind="text: name"></div><div class="listTextData" data-bind="text: formattedAddress"></div></div><div class="listImage"><img class="img-responsive" src="" data-bind="attr: {src: $parent.imagesArray()[imageIndex()]}"></div></div><hr></div></section><section data-bind="css: mapCss"><div id="map"></div></section><section class="choiceButton" data-bind="click: toggleModal"><img class="buttonImage" src="img/button.svg" alt="Choice Button!"></section><script>var map,
 			geocoder,
 			latitude, 
-			longitude;
+			longitude,
+			infowindow,
+			bounds;
 		function initMap() {
 			geocoder = new google.maps.Geocoder();
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 28.6100, lng: 77.2300},
-				zoom: 10,
+				zoom: 12
 			});
-		}</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><script async defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA12OwsmROzyF7ryMqu3X6tHpi14DHeKsM&callback=initMap"></script><script src="js/knockout.js"></script><script src="js/offline.min.js"></script><script src="js/app.js"></script></body></html>
+			infowindow = new google.maps.InfoWindow({
+				width: 400
+			});
+		}</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><script async defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rx6-z7o1FFMDtQ50Zc6guvJuzNTq_5w&callback=initMap"></script><script src="js/knockout.js"></script><script src="js/offline.min.js"></script><script src="js/app.js"></script></body></html>

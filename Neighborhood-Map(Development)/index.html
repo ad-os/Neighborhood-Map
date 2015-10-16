@@ -33,6 +33,7 @@
 			<h4>I appeared may be due to the following reasons &#128529;</h4>
 			<p>1. The server may be down.</p>
 			<p>2. You may be disconnected to the internet.</p>
+			<p>3. The requested page does not exist.
 			<h4>What you can do &#128526;</h4>
 			<p>1. Check your internet connection.</p>
 			<p>2. Refresh the page.</p>
@@ -54,10 +55,10 @@
 	<button class="buttonList" data-bind="click: toggleListDisplay, text: buttonText"></button>
 	<!-- List Section -->
 	<section data-bind="visible: showAndHideList, css: listCss" >
-		<input class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
+		<input id="autocomplete" class="inputText" type="text" data-bind="value: filter, valueUpdate: 'afterkeydown'" placeholder="Search" autofocus/>
 		<hr>
 		<div data-bind="foreach: filteredItems">
-			<div class="listItem" data-bind="event: { mouseover: $parent.enableMarkerHover, mouseout: $parent.disableMarker}, click: $parent.enableMarkerClick">
+			<div class="listItem" data-bind="event: { mouseover: $parent.enableMarkerHover}, click: $parent.enableMarkerClick">
 				<div class="listText">
 					<div class="listTextHeading" data-bind="text: name"></div>
 					<div class="listTextData" data-bind="text: formattedAddress"></div>
@@ -88,6 +89,7 @@
 			geocoder = new google.maps.Geocoder();
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 28.6100, lng: 77.2300},
+				zoom: 12
 			});
 			infowindow = new google.maps.InfoWindow({
 				width: 400
@@ -95,7 +97,7 @@
 		}
 	</script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rx6-z7o1FFMDtQ50Zc6guvJuzNTq_5w&signed_in=true&callback=initMap">
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2rx6-z7o1FFMDtQ50Zc6guvJuzNTq_5w&callback=initMap">
 	</script>
 	<script src="js/knockout.js"></script>
 	<script src="js/offline.min.js"></script>
