@@ -24,4 +24,4 @@
 >Enjoy:sparkles:
 
 
-Format: ![Alt Project Image](https://github.com/ad-os/Neighborhood-Map/blob/master/img/neighbor.png)
+![Alt Project Image](https://github.com/ad-os/Neighborhood-Map/blob/master/img/neighbor.png)
