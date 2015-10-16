@@ -22,4 +22,6 @@
 >You can get the modal back by clicking on the icon present in the bottom right corner of your page and search for another item and location.
 
 >Enjoy:sparkles:
+
+
 Format: ![Alt Project Image](https://github.com/ad-os/Neighborhood-Map/blob/master/img/neighbor.png)
