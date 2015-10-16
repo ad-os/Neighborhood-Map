@@ -13,9 +13,13 @@
 3. A error page is redirected if no ajax call is received.
 4. The browser stores the state of your last search and location.
 5. Optimized for mobile UI.(Do check it)
+6. Different icons on the marker info window depending upon category.
+7. Different instagram links on the marker info window depending upon category.
+8. Marker color change on click.
 
 
 >Note: 
 >You can get the modal back by clicking on the icon present in the bottom right corner of your page and search for another item and location.
 
 >Enjoy:sparkles:
+Format: ![Alt Project Image](https://github.com/ad-os/Neighborhood-Map/blob/master/img/neighbor.png)
