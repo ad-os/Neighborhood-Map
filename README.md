@@ -1,7 +1,7 @@
 # Neighborhood-Map
 
 
-###How to run the map
+### How to run the map
 1. Download the zip folder for this project.
 2. In the root folder of the project open Index.html
 3. A screen with a modal above the map will appear.
@@ -17,11 +17,15 @@
 7. Different instagram links on the marker info window depending upon category.
 8. Marker color change on click.
 
+### Expected Bug
+The map on first load may not show the map behind the modal so you may need to referesh it to make the project look as given in the image below.
 
 >Note: 
 >You can get the modal back by clicking on the icon present in the bottom right corner of your page and search for another item and location.
 
 >Enjoy:sparkles:
 
-
+Map on first load
+![Alt Project Image On First](https://github.com/ad-os/Neighborhood-Map/blob/master/img/mapOnFirstLoad.png)
+Map after first load
 ![Alt Project Image](https://github.com/ad-os/Neighborhood-Map/blob/master/img/neighbor.png)
