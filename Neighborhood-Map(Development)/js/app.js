@@ -7,7 +7,7 @@ var instaLinks = []; //An array containing links to instagram pages based on sea
 var apiDetails = {
 	clientId: 'AQKR5W0CRVB4SPIE5C2XJDJJQH0IS2BWGWS3QJY0CUYL2F1F',
 	clientSecret: 'RYVS3A2URZDDZURSDNOFVXEVQWSECAXXXFFNAB1IAJY2BV0N',
-	instagramAccessToken: '2235758096.1fb234f.984dee2be36946789a4427ff1ff7dd62'
+	instagramAccessToken: '2235758096.43b1810.65787d5506334d68a7dd0b0e023f38ff'
 };
 
 /*
